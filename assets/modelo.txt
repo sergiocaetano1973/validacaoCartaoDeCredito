@@ -1,0 +1,31 @@
+Visa:Prefixo: Começa com 4 (Exemplo: 4xxx xxxx xxxx xxxx)
+
+MasterCard:Prefixo: Começa com 5 ou 2 (Exemplo: 5xxx xxxx xxxx xxxx ou 2xxx xxxx xxxx xxxx)
+
+
+Elo:Prefixo: Começa com 4 ou 5 (Exemplo: 4xxx xxxx xxxx xxxx ou 5xxx xxxx xxxx xxxx)
+
+
+American Express (Amex):Prefixo: Começa com 34 ou 37 (Exemplo: 34xx xxxx xxxx xxxx ou 37xx xxxx xxxx xxxx)
+
+
+Discover:Prefixo: Começa com 6 (Exemplo: 6xxx xxxx xxxx xxxx)
+
+
+Hipercard:Prefixo: Começa com 6060 ou 6070 (Exemplo: 6060 xxxx xxxx xxxx ou 6070 xxxx xxxx xxxx)
+
+
+Diners Club:Prefixo: Começa com 36, 38 ou 39 (Exemplo: 36xx xxxx xxxx xxxx, 38xx xxxx xxxx xxxx, ou 39xx xxxx xxxx xxxx)
+
+
+EnRoute:Prefixo: Começa com 201 ou 214 (Exemplo: 201x xxxx xxxx xxxx ou 214x xxxx xxxx xxxx)
+
+
+JCB:Prefixo: Começa com 3 (Exemplo: 3xxx xxxx xxxx xxxx)
+
+
+Voyager:Prefixo: Começa com 8699 (Exemplo: 8699 xxxx xxxx xxxx)
+
+
+Aura:Prefixo: Começa com 50 (Exemplo: 50xx xxxx xxxx xxxx)
+

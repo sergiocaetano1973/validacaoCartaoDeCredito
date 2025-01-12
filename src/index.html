@@ -1,0 +1,167 @@
+<!-- Conteúdo do arquivo HTML -->
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Cartão de Crédito</title>
+    <style>
+        input[type="text"] {
+            width: 2em;
+            text-align: center;
+        }
+        #expiryYear {
+            width: 4em;
+        }
+        #cardNumber {
+            width: 20em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Validação de Cartão de Crédito</h1>
+    <label for="cardNumber">Número do Cartão:</label>
+    <input type="text" id="cardNumber" maxlength="20" placeholder="Digite o número do cartão">
+    <button onclick="validate()">Validar</button>
+    <p id="result"></p>
+
+    <div id="additionalFields" style="display: none;">
+        <label for="expiryDay">Dia de Vencimento:</label>
+        <input type="text" id="expiryDay" maxlength="2" placeholder="DD" oninput="moveToNext(this, 'expiryMonth')">
+        
+        <label for="expiryMonth">Mês de Vencimento:</label>
+        <input type="text" id="expiryMonth" maxlength="2" placeholder="MM" oninput="moveToNext(this, 'expiryYear')">
+        
+        <label for="expiryYear">Ano de Vencimento:</label>
+        <input type="text" id="expiryYear" maxlength="4" placeholder="AAAA">
+        
+        <p id="expiryResult"></p>
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" maxlength="3" placeholder="Digite o CVV">
+        <button onclick="finalizePurchase()">Finalizar Compra</button>
+        <p id="purchaseResult"></p>
+    </div>
+
+    <script src="validateCard.js"></script>
+    <script>
+        function validate() {
+            let cardNumber = document.getElementById('cardNumber').value;
+            cardNumber = cardNumber.replace(/\s+/g, ''); // Remove espaços
+            const resultElement = document.getElementById('result');
+            const additionalFields = document.getElementById('additionalFields');
+            const cardType = getCardType(cardNumber);
+
+            if (cardType && validateCard(cardNumber, 'luhn')) {
+                resultElement.textContent = `Bandeira do Cartão: ${cardType}`;
+                additionalFields.style.display = 'block';
+            } else {
+                resultElement.textContent = 'Cartão inválido';
+                additionalFields.style.display = 'none';
+            }
+        }
+
+        function finalizePurchase() {
+            const expiryDay = document.getElementById('expiryDay').value;
+            const expiryMonth = document.getElementById('expiryMonth').value;
+            const expiryYear = document.getElementById('expiryYear').value;
+            const expiryResult = document.getElementById('expiryResult');
+            const purchaseResult = document.getElementById('purchaseResult');
+            const cvv = document.getElementById('cvv').value;
+
+            if (!isValidDate(expiryDay, expiryMonth, expiryYear)) {
+                expiryResult.textContent = 'Data de vencimento inválida';
+                purchaseResult.textContent = '';
+                return;
+            }
+
+            const currentDate = new Date();
+            const selectedDate = new Date(expiryYear, expiryMonth - 1, expiryDay);
+
+            if (selectedDate < currentDate) {
+                expiryResult.textContent = 'Cartão expirado';
+                purchaseResult.textContent = '';
+            } else if (cvv.length !== 3 || isNaN(cvv)) {
+                expiryResult.textContent = '';
+                purchaseResult.textContent = 'CVV inválido';
+            } else {
+                expiryResult.textContent = '';
+                purchaseResult.textContent = 'Compra efetivada';
+            }
+        }
+
+        function isValidDate(day, month, year) {
+            const regexDay = /^\d{2}$/;
+            const regexMonth = /^\d{2}$/;
+            const regexYear = /^\d{4}$/;
+
+            if (!regexDay.test(day) || !regexMonth.test(month) || !regexYear.test(year)) return false;
+
+            const date = new Date(year, month - 1, day);
+            return date.getFullYear() === parseInt(year) && date.getMonth() === parseInt(month) - 1 && date.getDate() === parseInt(day);
+        }
+
+        function moveToNext(current, nextFieldId) {
+            if (current.value.length === current.maxLength) {
+                document.getElementById(nextFieldId).focus();
+            }
+        }
+
+        function getCardType(cardNumber) {
+            const cardTypes = {
+                visa: /^4/,
+                mastercard: /^(5|2)/,
+                elo: /^(4|5)/,
+                amex: /^(34|37)/,
+                discover: /^6/,
+                hipercard: /^(6060|6070)/,
+                diners: /^(36|38|39)/,
+                enroute: /^(201|214)/,
+                jcb: /^3/,
+                voyager: /^8699/,
+                aura: /^50/
+            };
+
+            for (const [type, pattern] of Object.entries(cardTypes)) {
+                if (pattern.test(cardNumber)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        function validateCard(cardNumber, flag) {
+            const regex = /^\d{13,19}$/;
+            if (!regex.test(cardNumber)) {
+                return false;
+            }
+
+            if (flag === 'luhn') {
+                return luhnCheck(cardNumber);
+            } else if (flag === 'length') {
+                return cardNumber.length >= 13 && cardNumber.length <= 19;
+            }
+            return false;
+        }
+
+        function luhnCheck(cardNumber) {
+            let sum = 0;
+            let alternate = false;
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let n = parseInt(cardNumber.charAt(i), 10);
+                if (alternate) {
+                    n *= 2;
+                    if (n > 9) {
+                        n -= 9;
+                    }
+                }
+                sum += n;
+                alternate = !alternate;
+            }
+            return sum % 10 === 0;
+        }
+    </script>
+</body>
+</html>
